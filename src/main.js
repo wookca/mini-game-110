@@ -475,7 +475,7 @@ async function triggerGameOverSequence() {
         title: "GAME OVER",
         fromScore,
         toScore,
-        hintText: "Press Q to Restart",
+        hintText: "Press Left/Right to Restart",
         showHint: true,
       },
       keepOverlayOnEnd: true,
