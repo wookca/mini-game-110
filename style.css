@@ -175,9 +175,13 @@ top: 120px;
 
   color: #fff;
   font-size: 48px;
-  font-weight: 600; /* Pretendard SemiBold 느낌 */
+  font-weight: 600;
 
   touch-action: manipulation;
+
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .ctrl-btn:active {
