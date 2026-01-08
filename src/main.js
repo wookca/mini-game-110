@@ -41,8 +41,11 @@ const BASE_STAGE_W = 540;
 const BASE_STAGE_H = 960;
 
 function resizeStage() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const vv = window.visualViewport;
+
+  // ✅ 모바일에서 주소창/툴바로 innerHeight가 흔들리는 문제를 피함
+  const vw = vv ? vv.width : window.innerWidth;
+  const vh = vv ? vv.height : window.innerHeight;
 
   const scale = Math.min(vw / BASE_STAGE_W, vh / BASE_STAGE_H);
   stageEl.style.transform = `scale(${scale})`;
