@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    />
+    <title>My Mobile Game</title>
+
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="stage">
+        <canvas id="game" width="1080" height="1920"></canvas>
+
+        <video
+          id="cutscene"
+          class="cutscene"
+          playsinline
+          webkit-playsinline
+          preload="auto"
+        ></video>
+
+        <!-- ✅ 오버레이(타이틀/스코어/힌트) -->
+        <div id="cutsceneOverlay" class="cutscene-overlay" aria-hidden="true">
+          <div id="cutsceneOverlayTitle" class="label">Score</div>
+          <div class="value"><span id="cutsceneScore">0</span></div>
+          <div id="cutsceneOverlayHint" class="hint"></div>
+        </div>
+
+        <video
+          id="titleVideo"
+          class="cutscene"
+          playsinline
+          webkit-playsinline
+          preload="auto"
+          loop
+        ></video>
+
+        <div id="controls">
+          <button id="btnLeft" class="ctrl-btn">◀</button>
+          <button id="btnRight" class="ctrl-btn">▶</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
