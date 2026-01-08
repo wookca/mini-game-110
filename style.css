@@ -35,15 +35,16 @@ body {
   align-items: center;
 }
 
-/* ✅ PC 기준 스테이지(1080x1920) 고정 + transform scale로만 줄임 */
+/* ✅ PC 기준 화면(표시용)은 고정 크기 */
 #stage {
   position: relative;
-  width: 1080px;
-  height: 1920px;
+  width: 540px;
+  height: 960px;
   transform-origin: center center;
   background: #12131a;
   overflow: hidden;
 }
+
 
 /* ================================
    Canvas
@@ -85,7 +86,7 @@ body {
   right: 0;
 
   /* ✅ JS가 넣어주는 값(스테이지 높이 기반) */
-top: 240px;
+top: 120px;
 
   z-index: 20;
   text-align: center;
