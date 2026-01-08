@@ -134,6 +134,61 @@ function hideOverlay() {
 // ---------- Video helpers ----------
 let transitionLock = false;
 
+// ✅ 비디오 준비될 때까지 캔버스 렌더를 잠깐 멈추기 위한 플래그
+let renderHold = false;
+
+// ✅ Method 1: 실제 video 파이프라인 워밍업 (가장 효과 좋음)
+const warmMap = new Map();
+
+function warmupVideoElement(src) {
+  if (!src) return null;
+  if (warmMap.has(src)) return warmMap.get(src);
+
+  const v = document.createElement("video");
+  v.preload = "auto";
+  v.muted = true;
+  v.playsInline = true;
+  v.crossOrigin = "anonymous";
+  v.src = src;
+  v.load();
+
+  const ready = new Promise((resolve) => {
+    const ok = () => resolve(true);
+    const fail = () => resolve(false);
+    v.addEventListener("loadeddata", ok, { once: true });
+    v.addEventListener("canplay", ok, { once: true });
+    v.addEventListener("error", fail, { once: true });
+  });
+
+  const entry = { v, ready };
+  warmMap.set(src, entry);
+  return entry;
+}
+
+function warmupAllVideos() {
+  // 너가 이미 쓰는 Cloudinary URL 목록 그대로 재사용
+  const list = [
+    TITLE_SRC,
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/A_opening_cgpss3.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847034/A_finish_havlxa.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847030/B_opening_lmj8ie.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847035/B_finish_stvt9m.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_opening_lbrvrv.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_finish_bon4qw.mp4",
+  ];
+
+  list.forEach((u) => warmupVideoElement(u));
+}
+
+
+function holdRenderOn() {
+  renderHold = true;
+}
+function holdRenderOff() {
+  renderHold = false;
+}
+
+
 // ---------- Cache preloader (Method 2) ----------
 async function preloadVideoToCache(src) {
   if (!src) return;
@@ -167,18 +222,37 @@ function preloadAllCutscenesToCache() {
 
 
 function showVideo(el, src, { loop = false, muted = false } = {}) {
-  el.classList.add("show");
+  // ✅ 비디오가 준비될 때까지 게임 렌더를 잠깐 멈춤 (게임 화면이 미리 비치지 않게)
+  holdRenderOn();
+
+  // 먼저 설정만 해두고(아직 show 안 함)
+  el.classList.remove("show");
   el.loop = loop;
   el.src = src;
   el.currentTime = 0;
   el.muted = muted;
 
+  const onReady = () => {
+    el.classList.add("show");
+    holdRenderOff(); // ✅ 비디오가 보이기 시작하면 렌더 재개
+  };
+
+  const onFail = () => {
+    holdRenderOff(); // 실패해도 렌더는 풀어줌
+  };
+
+  el.addEventListener("loadeddata", onReady, { once: true });
+  el.addEventListener("canplay", onReady, { once: true });
+  el.addEventListener("error", onFail, { once: true });
+
   return el.play().catch(() => {
-    // autoplay 정책으로 실패해도 탭 재시도로 커버
+    onFail();
   });
 }
 
+
 function hideVideo(el) {
+  holdRenderOff(); // ✅ 안전장치
   el.pause();
   el.classList.remove("show");
   el.removeAttribute("src");
@@ -268,6 +342,7 @@ function startTitle() {
 
   // ✅ 메인(타이틀)에서 영상들을 미리 다운로드해서 캐시에 넣기 시작
   preloadAllCutscenesToCache();
+warmupAllVideos(); // ✅ 추가
 
   lastScoreShown = 0;
   hideOverlay();
@@ -349,7 +424,7 @@ async function triggerGameOverSequence() {
 // ---------- Render Helpers ----------
 function clear() {
   ctx2d.clearRect(0, 0, WIDTH, HEIGHT);
-  ctx2d.fillStyle = "#12131a";
+  ctx2d.fillStyle = "#ffffff";
   ctx2d.fillRect(0, 0, WIDTH, HEIGHT);
 }
 
@@ -407,18 +482,19 @@ if (flow.isGameOver) {
 
   }
 
-  if (state !== STATE.TITLE) {
-    flow.current?.render?.(ctx2d);
+if (state !== STATE.TITLE && !renderHold) {
+  flow.current?.render?.(ctx2d);
 
-    drawHUD(ctx2d, {
-      stageName: flow.current?.name ?? flow.current?.id ?? "stage",
-      stageIndex: flow.stageIndex,
-      timeLeft: flow.timeLeft,
-      stageSeconds: flow.stageSeconds,
-      score: flow.score,
-      speedLevel: flow.speedLevel,
-    });
-  }
+  drawHUD(ctx2d, {
+    stageName: flow.current?.name ?? flow.current?.id ?? "stage",
+    stageIndex: flow.stageIndex,
+    timeLeft: flow.timeLeft,
+    stageSeconds: flow.stageSeconds,
+    score: flow.score,
+    speedLevel: flow.speedLevel,
+  });
+}
+
 
   if (state === STATE.GAMEOVER && restartPressed) {
     restartPressed = false;
