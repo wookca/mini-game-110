@@ -12,6 +12,10 @@ if (!canvas) throw new Error('Canvas not found. Check index.html has <canvas id=
 const ctx2d = canvas.getContext("2d");
 if (!ctx2d) throw new Error("2D context not available.");
 
+// ✅ 캔버스 내부 좌표계를 core.js의 WIDTH/HEIGHT로 고정 (왜곡 방지)
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
+
 const btnLeft = document.getElementById("btnLeft");
 const btnRight = document.getElementById("btnRight");
 if (!btnLeft || !btnRight) {
