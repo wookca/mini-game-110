@@ -33,6 +33,31 @@ if (!overlayEl || !overlayTitleEl || !overlayScoreEl || !overlayHintEl) {
   throw new Error("cutscene overlay elements not found. Check index.html overlay markup.");
 }
 
+// ---------- Stage Scale (PC 기준 화면을 통째로 축소/확대) ----------
+const stageEl = document.getElementById("stage");
+if (!stageEl) throw new Error('Stage not found. Check index.html has <div id="stage">');
+
+function resizeStage() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // core.js의 WIDTH/HEIGHT(1080x1920)를 기준으로 스케일 계산
+  const scale = Math.min(vw / WIDTH, vh / HEIGHT);
+
+  stageEl.style.transform = `scale(${scale})`;
+}
+
+resizeStage();
+window.addEventListener("resize", resizeStage);
+window.addEventListener("orientationchange", resizeStage);
+
+// iOS 주소창/툴바로 viewport가 변하는 문제까지 대응
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", resizeStage);
+  window.visualViewport.addEventListener("scroll", resizeStage);
+}
+
+
 // ---------- Input ----------
 const input = new Input(btnLeft, btnRight);
 
