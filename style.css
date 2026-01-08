@@ -35,18 +35,12 @@ body {
   align-items: center;
 }
 
-/* ✅ 9:16 컨테이너를 "뷰포트 안에 최대한 크게" */
+/* ✅ PC 기준 스테이지(1080x1920) 고정 + transform scale로만 줄임 */
 #stage {
   position: relative;
-  aspect-ratio: 9 / 16;
-
-  /* 뷰포트에 맞춰 contain (가로/세로 중 더 작은 쪽에 맞춤) */
-  width: min(100vw, calc(100dvh * 9 / 16));
-  height: min(100dvh, calc(100vw * 16 / 9));
-
-  max-width: 540px;
-  max-height: 960px;
-
+  width: 1080px;
+  height: 1920px;
+  transform-origin: center center;
   background: #12131a;
   overflow: hidden;
 }
@@ -89,11 +83,14 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  top: 130px;          /* “상단에서 조금 아래” */
-  z-index: 20;         /* 영상(10)보다 위 */
+
+  /* ✅ JS가 넣어주는 값(스테이지 높이 기반) */
+top: 240px;
+
+  z-index: 20;
   text-align: center;
   display: none;
-  pointer-events: none; /* 영상 탭 스킵 방해 X */
+  pointer-events: none;
 }
 
 .cutscene-overlay.show {
@@ -252,3 +249,4 @@ body {
 .cutscene {
   pointer-events: none;
 }
+
