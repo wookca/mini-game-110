@@ -259,3 +259,21 @@ top: 120px;
   pointer-events: none;
 }
 
+/* 게임 전체: 텍스트 선택/롱프레스 메뉴 방지 */
+#app, #stage, .btn, .hud, .ui, .touch, .controls, button {
+  -webkit-user-select: none;
+  user-select: none;
+
+  -webkit-touch-callout: none; /* iOS: 복사/돋보기 메뉴 */
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation; /* 더블탭 줌/불필요 제스처 줄임 */
+}
+
+/* 혹시 텍스트로 된 방향키 span/div가 있으면 */
+.direction, .arrow, .dpad, .key {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
