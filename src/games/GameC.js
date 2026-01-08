@@ -4,8 +4,8 @@ export const GameC = {
   id: "bar-rise",
   name: "포떼링이 내려요",
 
-  openingVideo: "./assets/video/C_opening.mp4",
-  finishVideo: "./assets/video/C_finish.mp4",
+  openingVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_opening_lbrvrv.mp4",
+  finishVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_finish_bon4qw.mp4",
 
   init(ctx) {
     this._ctx = ctx;

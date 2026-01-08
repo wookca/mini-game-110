@@ -4,8 +4,8 @@ export const GameB = {
   id: "GameB",
   name: "링성맞춤 징떼링",
 
-  openingVideo: "./assets/video/B_opening.mp4",
-  finishVideo: "./assets/video/B_finish.mp4",
+  openingVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847030/B_opening_lmj8ie.mp4",
+  finishVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847035/B_finish_stvt9m.mp4",
 
   init(ctx) {
     this._ctx = ctx;

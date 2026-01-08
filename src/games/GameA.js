@@ -4,8 +4,8 @@ export const GameA = {
   id: "lane-run",
   name: "달려달려 지떼링",
 
-  openingVideo: "./assets/video/A_opening.mp4",
-  finishVideo: "./assets/video/A_finish.mp4",
+  openingVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/A_opening_cgpss3.mp4",
+  finishVideo: "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847034/A_finish_havlxa.mp4",
 
   init(ctx) {
     this._ctx = ctx;
