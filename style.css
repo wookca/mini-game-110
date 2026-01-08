@@ -1,0 +1,249 @@
+/* ================================
+   Global Reset + Pretendard 적용
+================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  /* ✅ 게임 전체 폰트 */
+  font-family: "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans KR",
+    "Apple SD Gothic Neo",
+    sans-serif;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* ================================
+   Layout
+================================ */
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 540px; /* 모바일 기준 */
+  max-height: 960px;
+  background: #12131a;
+  overflow: hidden;
+}
+
+/* ================================
+   Canvas
+================================ */
+#game {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #12131a;
+}
+
+/* ================================
+   Cutscene / Title Video
+================================ */
+.cutscene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  background: #000;
+  display: none;
+  z-index: 10;
+
+  pointer-events: none; /* ✅ 영상 위 클릭 완전 차단 */
+}
+
+.cutscene.show {
+  display: block;
+}
+
+/* ================================
+   ✅ Finish 컷씬 점수 오버레이
+================================ */
+.cutscene-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 130px;          /* “상단에서 조금 아래” */
+  z-index: 20;         /* 영상(10)보다 위 */
+  text-align: center;
+  display: none;
+  pointer-events: none; /* 영상 탭 스킵 방해 X */
+}
+
+.cutscene-overlay.show {
+  display: block;
+}
+
+.cutscene-overlay .label {
+  font-size: 40px;
+  font-weight: 600;
+  color: #DE3136;
+  line-height: 1.0;
+}
+
+.cutscene-overlay .value {
+  margin-top: 3px;
+  font-size: 80px;
+  font-weight: 800;  /* 굵은 숫자 유지 */
+  color: #DE3136;
+  line-height: 1.0;
+}
+
+.cutscene-overlay .hint {
+  margin-top: 26px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  line-height: 1.0;
+  display: none;
+}
+
+.cutscene-overlay.show-hint .hint {
+  display: block;
+}
+
+
+/* ================================
+   Controls
+================================ */
+#controls {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px;
+
+  z-index: 30;
+}
+
+
+/* 게임 화면 클릭 방지 */
+#stage,
+#game {
+  pointer-events: none;
+}
+
+/* 버튼만 클릭 허용 */
+#controls,
+.ctrl-btn {
+  pointer-events: auto;
+}
+
+
+.ctrl-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.15);
+  border: none;
+
+  color: #fff;
+  font-size: 48px;
+  font-weight: 600; /* Pretendard SemiBold 느낌 */
+
+  touch-action: manipulation;
+}
+
+.ctrl-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ================================
+   Single Game Menu / Top Bar
+================================ */
+#topBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 16px;
+  z-index: 30;
+}
+
+#topBar button {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+#menu {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: #12131a;
+}
+
+#menu h1 {
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.menu-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 160px);
+  gap: 16px;
+}
+
+.menu-buttons button {
+  height: 64px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+/* 컷씬 클릭 완전 차단 */
+.cutscene {
+  pointer-events: none;
+}
