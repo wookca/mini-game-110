@@ -228,7 +228,7 @@ async function doStageTransition({ fromGame, toGame, scoreFrom, scoreTo }) {
 }
 
 // ---------- Title ----------
-const TITLE_SRC = "./assets/video/title.mp4";
+const TITLE_SRC = "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767846969/title_mkwkqw.mp4";
 
 function startTitle() {
   state = STATE.TITLE;
