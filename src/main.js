@@ -121,11 +121,6 @@ let gameOverLogged = false;
 
 // ---------- Keys ----------
 let restartPressed = false;
-window.addEventListener("keydown", (e) => {
-  if (e.repeat) return;
-  if (e.key === "q" || e.key === "Q") restartPressed = true;
-});
-
 
 // ---------- Audio unlock ----------
 let audioUnlocked = false;
@@ -287,7 +282,7 @@ function showVideo(el, src, { loop = false, muted = false } = {}) {
 
   const onReady = () => {
     el.classList.add("show");
-    holdRenderOff(); // ✅ 비디오가 보이기 시작하면 렌더 재개
+//    holdRenderOff(); // ✅ 비디오가 보이기 시작하면 렌더 재개
   };
 
   const onFail = () => {
@@ -434,6 +429,33 @@ function onAnyStartInput(e) {
 window.addEventListener("keydown", onAnyStartInput);
 btnLeft.addEventListener("pointerdown", onAnyStartInput);
 btnRight.addEventListener("pointerdown", onAnyStartInput);
+
+function onRestartByButtons(e) {
+  // ✅ "피니시 영상 끝나고 홀드된 뒤" = state가 GAMEOVER일 때만
+  if (state !== STATE.GAMEOVER) return;
+
+  e?.preventDefault?.();
+  restartPressed = true;
+}
+
+window.addEventListener("keydown", (e) => {
+  if (state !== STATE.GAMEOVER) return;
+  if (e.repeat) return;
+
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    restartPressed = true;
+    e.preventDefault();
+  }
+});
+
+
+// PC/모바일 공통
+btnLeft.addEventListener("pointerdown", onRestartByButtons);
+btnRight.addEventListener("pointerdown", onRestartByButtons);
+
+// iOS/모바일에서 확실히 들어오도록 touchstart도 추가
+btnLeft.addEventListener("touchstart", onRestartByButtons, { passive: false });
+btnRight.addEventListener("touchstart", onRestartByButtons, { passive: false });
 
 
 // ---------- GameOver sequence ----------
