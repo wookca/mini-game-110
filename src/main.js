@@ -535,3 +535,22 @@ if (state !== STATE.TITLE && !renderHold) {
 
 startTitle();
 requestAnimationFrame(frame);
+
+function updateOverlayTop() {
+  const stage = document.getElementById("stage");
+  if (!stage) return;
+
+  const rect = stage.getBoundingClientRect();
+  const topPx = Math.round(rect.height * 0.14); // 여기 값 바꾸면 바로 반영됨
+
+  stage.style.setProperty("--overlay-top", `${topPx}px`);
+}
+
+updateOverlayTop();
+window.addEventListener("resize", updateOverlayTop);
+window.addEventListener("orientationchange", updateOverlayTop);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateOverlayTop);
+  window.visualViewport.addEventListener("scroll", updateOverlayTop);
+}
