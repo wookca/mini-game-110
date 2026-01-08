@@ -26,23 +26,32 @@ body {
   overflow: hidden;
 }
 
-#app {
+/* #app은 스테이지를 절대배치로 가운데 놓을 컨테이너 */
+#app{
   width: 100vw;
   height: 100dvh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: #000;
 }
 
-/* ✅ PC 기준 화면(표시용)은 고정 크기 */
-#stage {
-  position: relative;
-  width: 540px;     /* ✅ 고정 */
-  height: 960px;    /* ✅ 고정 (9:16) */
-  background: #12131a;
-  overflow: hidden;
+/* 스테이지는 고정 해상도 */
+#stage{
+  position: absolute;
+  width: 540px;
+  height: 960px;
+  left: 50%;
+  top: 50%;
   transform-origin: center center;
 }
+
+/* 비디오 크롭 방지(원하면 유지) */
+.cutscene{
+  object-fit: contain;   /* cover면 크롭이 정상 */
+  background: #000;
+}
+
+
 
 
 /* ================================
@@ -63,7 +72,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;   /* 기존 cover → contain */
 
   background: #fff;
   display: none;
