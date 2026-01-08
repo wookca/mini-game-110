@@ -431,6 +431,11 @@ function clear() {
 // ---------- Main Loop ----------
 let last = performance.now();
 
+// ✅ FPS 상한 (원하면 30으로 바꿔도 됨)
+const FPS_CAP = 60;
+const FRAME_MS = 1000 / FPS_CAP;
+let lastFrameTick = 0;
+
 function frame(now) {
   const dt = Math.min(0.033, (now - last) / 1000);
   last = now;
