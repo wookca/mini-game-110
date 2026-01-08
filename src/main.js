@@ -39,20 +39,28 @@ if (!overlayEl || !overlayTitleEl || !overlayScoreEl || !overlayHintEl) {
 
 // ---------- Stage Scale (표시용 540x960을 화면에 맞춰 스케일) ----------
 const stageEl = document.getElementById("stage");
-if (!stageEl) throw new Error('Stage not found. Check index.html has <div id="stage">');
+if (!stageEl) throw new Error("Stage not found. Check index.html has #stage");
 
 const BASE_STAGE_W = 540;
 const BASE_STAGE_H = 960;
+const BASE_AR = BASE_STAGE_W / BASE_STAGE_H;
 
 function resizeStage() {
   const vv = window.visualViewport;
 
-  // ✅ 모바일에서 주소창/툴바로 innerHeight가 흔들리는 문제를 피함
+  // 모바일 주소창/툴바 변동 대응
   const vw = vv ? vv.width : window.innerWidth;
   const vh = vv ? vv.height : window.innerHeight;
 
-  const scale = Math.min(vw / BASE_STAGE_W, vh / BASE_STAGE_H);
-  stageEl.style.transform = `scale(${scale})`;
+  const viewAR = vw / vh;
+
+  // ✅ PC처럼 화면이 '넓으면' → 높이 기준 (위/아래 과한 잘림 방지)
+  // ✅ 모바일처럼 화면이 '좁으면' → 너비 기준
+  const scale = (viewAR > BASE_AR)
+    ? (vh / BASE_STAGE_H)   // 높이 기준
+    : (vw / BASE_STAGE_W);  // 너비 기준
+
+  stageEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 
 resizeStage();
