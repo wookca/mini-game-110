@@ -134,6 +134,38 @@ function hideOverlay() {
 // ---------- Video helpers ----------
 let transitionLock = false;
 
+// ---------- Cache preloader (Method 2) ----------
+async function preloadVideoToCache(src) {
+  if (!src) return;
+  const url = typeof videoUrl === "function" ? videoUrl(src) : src;
+
+  // CacheStorage 지원 안 되는 브라우저면 패스
+  if (!("caches" in window)) return;
+
+  const cache = await caches.open("video-cache-v1");
+  const hit = await cache.match(url);
+  if (hit) return;
+
+  const res = await fetch(url, { mode: "cors" });
+  if (res.ok) await cache.put(url, res);
+}
+
+function preloadAllCutscenesToCache() {
+  const list = [
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767846969/title_mkwkqw.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/A_opening_cgpss3.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847034/A_finish_havlxa.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847030/B_opening_lmj8ie.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847035/B_finish_stvt9m.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_opening_lbrvrv.mp4",
+    "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767847032/C_finish_bon4qw.mp4",
+  ];
+
+  // 동시에 너무 많이 때리지 않도록 “조금씩” 시작(그래도 간단 버전)
+  list.forEach((p) => preloadVideoToCache(p));
+}
+
+
 function showVideo(el, src, { loop = false, muted = false } = {}) {
   el.classList.add("show");
   el.loop = loop;
@@ -233,6 +265,9 @@ const TITLE_SRC = "https://res.cloudinary.com/dqyy2q2pb/video/upload/v1767846969
 function startTitle() {
   state = STATE.TITLE;
   showVideo(titleEl, TITLE_SRC, { loop: true, muted: true });
+
+  // ✅ 메인(타이틀)에서 영상들을 미리 다운로드해서 캐시에 넣기 시작
+  preloadAllCutscenesToCache();
 
   lastScoreShown = 0;
   hideOverlay();
