@@ -72,6 +72,19 @@ if (window.visualViewport) {
   window.visualViewport.addEventListener("scroll", resizeStage);
 }
 
+// iOS/모바일: 길게 눌러 복사 메뉴 뜨는 것 방지
+document.addEventListener("contextmenu", (e) => {
+  // 게임 영역에서만 막고 싶으면 stageEl.contains(e.target) 조건을 쓰면 됨
+  e.preventDefault();
+}, { passive: false });
+
+// 드래그 선택 자체 방지(특히 텍스트 UI가 있을 때)
+document.addEventListener("selectstart", (e) => {
+  e.preventDefault();
+}, { passive: false });
+
+
+
 
 // ---------- Input ----------
 const input = new Input(btnLeft, btnRight);
