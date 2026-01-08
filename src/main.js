@@ -57,12 +57,22 @@ const STATE = {
 };
 let state = STATE.TITLE;
 
+// ---------- Analytics helpers ----------
+function gaEvent(name, params = {}) {
+  // gtag가 아직 없거나 로드 실패해도 게임은 계속 돌아가게
+  window.gtag?.("event", name, params);
+}
+
+// 한 판에서 gameover 이벤트가 여러 프레임 찍히는 것 방지용
+let gameOverLogged = false;
+
 // ---------- Keys ----------
 let restartPressed = false;
 window.addEventListener("keydown", (e) => {
   if (e.repeat) return;
   if (e.key === "q" || e.key === "Q") restartPressed = true;
 });
+
 
 // ---------- Audio unlock ----------
 let audioUnlocked = false;
@@ -244,13 +254,24 @@ async function startGameFromTitle() {
   transitionLock = false;
 }
 
-function onAnyStartInput() {
+function onAnyStartInput(e) {
   if (state !== STATE.TITLE) return;
+
+  // 2) "아무 키 눌러 게임 실행" 이벤트
+  const method =
+    e?.type === "keydown" ? "keyboard" :
+    e?.currentTarget?.id === "btnLeft" ? "btn_left" :
+    e?.currentTarget?.id === "btnRight" ? "btn_right" :
+    "unknown";
+
+  gaEvent("game_start", { method });
+
   startGameFromTitle();
 }
 window.addEventListener("keydown", onAnyStartInput);
 btnLeft.addEventListener("pointerdown", onAnyStartInput);
 btnRight.addEventListener("pointerdown", onAnyStartInput);
+
 
 // ---------- GameOver sequence ----------
 async function triggerGameOverSequence() {
@@ -327,9 +348,28 @@ function frame(now) {
       });
     }
 
-    if (flow.isGameOver) {
-      triggerGameOverSequence();
-    }
+// 게임 오버 감지
+if (flow.isGameOver) {
+  if (!gameOverLogged) {
+    gameOverLogged = true;
+
+    // 3) 어떤 게임에서 가장 많이 죽는지
+    gaEvent("game_death", {
+      game_id: flow.current?.id ?? "unknown",
+      stage_index: flow.stageIndex,
+      score: flow.score,
+    });
+
+    // 4) 게임 종료 후 토탈 스코어(평균은 GA에서 자동으로 평균 계산)
+    gaEvent("run_end", {
+      final_score: flow.score,
+      final_stage: flow.stageIndex,
+    });
+  }
+
+  triggerGameOverSequence();
+}
+
   }
 
   if (state !== STATE.TITLE) {
@@ -347,6 +387,11 @@ function frame(now) {
 
   if (state === STATE.GAMEOVER && restartPressed) {
     restartPressed = false;
+
+    // 5) Q로 재시작
+    gaEvent("game_restart", { from_score: lastScoreShown });
+    gameOverLogged = false; // 다음 판의 gameover 로그를 다시 찍을 수 있게 초기화
+
 
     if (transitionLock) return;
     transitionLock = true;
